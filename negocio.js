@@ -32,6 +32,8 @@ function setup() {
     bo = {
       x: width/2,
       y: height/2,
+      fx: this.x,
+      fy: this.y,
       w: zise,
       h: zise,
       min: 2,
@@ -41,6 +43,12 @@ function setup() {
           y = map(this.y,minY,maxY,minYimg,maxYimg);
           this.cor = color(img.get(x,y));
       },
+        
+      animar: function(){
+          this.x = (this.fx - this.x) * 0.05
+          this.y = (this.fy - this.y) * 0.05
+      },
+        
       split: function() {
         w = this.w/2;
         h = this.h/2;
@@ -53,16 +61,17 @@ function setup() {
            bs.push(Object.create(bo)),
            bs[i].w = w;
            bs[i].h =h;
-           
+           bs[i].x= this.x
+           bs[i].y= this.y
         }
-        bs[0].x = this.x-w/2;
-        bs[0].y = this.y-h/2;
-        bs[1].x = this.x+w/2;
-        bs[1].y = this.y-h/2;
-        bs[2].x = this.x-w/2;
-        bs[2].y = this.y+h/2;
-        bs[3].x = this.x+w/2;
-        bs[3].y = this.y+h/2;
+        bs[0].fx = this.x-w/2;
+        bs[0].fy = this.y-h/2;
+        bs[1].fx = this.x+w/2;
+        bs[1].fy = this.y-h/2;
+        bs[2].fx = this.x-w/2;
+        bs[2].fy = this.y+h/2;
+        bs[3].fx = this.x+w/2;
+        bs[3].fy = this.y+h/2;
         bs[0].getColor();
         bs[1].getColor();
         bs[2].getColor();
