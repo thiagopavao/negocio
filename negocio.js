@@ -13,6 +13,7 @@ var maxYimg;
 var zise = 500;
 var fundo;
 
+
 function preload() {
    img = loadImage('walrus_bucket.jpg') 
 }
@@ -32,21 +33,47 @@ function setup() {
     bo = {
       x: width/2,
       y: height/2,
-      fx: this.x,
-      fy: this.y,
+      fx: width/2,
+      fy: height/2,
+      velox: 0,
+      veloy: 0,
       w: zise,
       h: zise,
       min: 2,
       cor: color(0,119,168),
+      movendo: function() {
+        return !(this.x == this.fx && this.y == this.fy);
+      },
       getColor: function() {
-          x = map(this.x,minX,maxX,minXimg,maxXimg);
-          y = map(this.y,minY,maxY,minYimg,maxYimg);
+          x = map(this.fx,minX,maxX,minXimg,maxXimg);
+          y = map(this.fy,minY,maxY,minYimg,maxYimg);
           this.cor = color(img.get(x,y));
       },
         
-      animar: function(){
-          this.x = (this.fx - this.x) * 0.05
-          this.y = (this.fy - this.y) * 0.05
+      animara: function(){
+          this.x += (this.fx - this.x) * 0.05;
+          this.y += (this.fy - this.y) * 0.05;
+      },
+      
+      animarr: function(){
+          if(this.x != this.fx){
+             if (abs(this.fx - this.x)<abs(this.velox)) {
+                 this.x = this.fx;
+             }else{
+                 this.x += this.velox;
+             }
+          }
+          if(this.y != this.fy){
+            if (abs(this.fy - this.y)<abs(this.veloy)) {
+                 this.y = this.fy;
+             }else{
+                 this.y += this.veloy;
+             }
+          }
+      },
+      getVelo() {
+          this.velox += (this.fx - this.x) /30;
+          this.veloy += (this.fy - this.y) /30;
       },
         
       split: function() {
@@ -72,10 +99,11 @@ function setup() {
         bs[2].fy = this.y+h/2;
         bs[3].fx = this.x+w/2;
         bs[3].fy = this.y+h/2;
-        bs[0].getColor();
-        bs[1].getColor();
-        bs[2].getColor();
-        bs[3].getColor();
+        
+        for(i=0;i<4;i++){
+            bs[i].getColor();
+            bs[i].getVelo();
+        }
           
         return bs;
     }
@@ -95,14 +123,17 @@ function draw() {
         } else {
             noStroke();
         }
+        b.animarr();
         ellipse(b.x,b.y,b.w,b.h);
-        if (dist(mouseXant,mouseYant,b.x,b.y) > b.w/2){
-        if (dist(mouseX,mouseY,b.x,b.y) < b.w/2){
-            novas = b.split();
-            bs.splice(i,1);
-            Array.prototype.push.apply(bs,novas);
+        if(!b.movendo()){
+            if (dist(mouseXant,mouseYant,b.x,b.y) > b.w/2){
+            if (dist(mouseX,mouseY,b.x,b.y) < b.w/2){
+                novas = b.split();
+                bs.splice(i,1);
+                Array.prototype.push.apply(bs,novas);
             
-        }
+            }
+            }
         }
     }
     mouseXant = mouseX;
